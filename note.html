@@ -244,7 +244,7 @@ li:hover{
 
 // 🔐 check login ==============================================================================>
     if (!token) {
-        window.location.href = "/templates/login.html"
+        window.location.href = "login.html"
     }
 
 
@@ -361,21 +361,8 @@ li:hover{
     // 🔓 LOGOUT
     function logout() {
         localStorage.removeItem("token")
-        window.location.href = "/templates/login.html"
+        window.location.href = "/index.html"
     }
-
-    // toggle note
-    // function toggleNote(btn) {
-    //     let noteText = btn.parentElement.querySelector(".notes")
-
-    //     if (noteText.style.maxHeight === "none") {
-    //         noteText.style.maxHeight = "50px"
-    //         btn.innerText = "Open"
-    //     } else {
-    //         noteText.style.maxHeight = "none"
-    //         btn.innerText = "Close"
-    //     }
-    // }
 
     function toggleNote(btn) {
     let noteText = btn.parentElement.querySelector(".notes");
@@ -434,7 +421,7 @@ function editNote(id, title, content) {
 
             catch (err) {
                 console.log(err)
-                // logout()
+                logout()
             }
 
         }};

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login Page</title>
+<title>Register Page</title>
 
 <style>
 *{
@@ -19,11 +19,7 @@ body{
     justify-content:center;
     align-items:center;
     height:100vh;
-
-    
 }
-
-
 
 .container{
     text-align:center;
@@ -79,9 +75,14 @@ h1{
     box-shadow: 0px 0px 20px #000000;
 }
 
+.card h2{
+    margin-bottom:20px;
+    color:#000000;
+}
+
 label{
     font-size:12px;
-    color:#6b7280d5;
+    color:#6b7280;
 }
 
 input{
@@ -127,9 +128,16 @@ button:hover{
     margin-top:20px;
 }
 
+.footer-text a{
+    text-decoration:none;
+    font-weight:bold;
+    color:#374151;
+}
+
 #msg{
     color:red;
-    font-size:12px;
+    padding: 10px;
+    font-size:15px;
     text-align:center;
 }
 </style>
@@ -144,23 +152,26 @@ button:hover{
     <h1>The Curated Slate</h1>
     <div class="subtitle">ELEVATED NOTE-TAKING</div>
 
-    <form onsubmit="login(event)">
+    <form onsubmit="register(event)">
         <div class="card">
-            <h2>Login</h2>
+            <h2>Register</h2>
+
+            <label>Username</label>
+            <input type="text" id="username" placeholder="Enter your username" required>
 
             <label>Email</label>
             <input type="email" id="email" placeholder="Enter your email" required>
 
             <label>Password</label>
             <div class="password-row">
-                <input type="password" id="password" placeholder="password"  required>
+                <input type="password" id="password" placeholder="password" required>
                 <!-- <span class="show-btn" onclick="togglePassword()">Show</span> -->
             </div>
 
-            <button type="submit" id="btn">Login</button>
+            <button type="submit" id="btn">Register</button>
 
             <div class="footer-text">
-                New here? <a href="/templates/register.html">Register</a>
+                Already have an account? <a href="/index.html">Login</a>
             </div>
 
             <p id="msg"></p>
@@ -176,9 +187,10 @@ function togglePassword() {
     pass.type = pass.type === "password" ? "text" : "password"
 }
 
-async function login(event) {
+async function register(event) {
     event.preventDefault()
 
+    const username = document.getElementById("username").value
     const email = document.getElementById("email").value
     const password = document.getElementById("password").value
     const msg = document.getElementById("msg")
@@ -186,36 +198,33 @@ async function login(event) {
 
     msg.innerText = ""
 
-    if (!email || !password) {
+    if (!username || !email || !password) {
         msg.innerText = "All fields are required"
         return
     }
 
     btn.disabled = true
-    btn.innerText = "Logging in..."
+    btn.innerText = "Registering..."
 
     try {
-        const res = await fetch("http://127.0.0.1:5000/login", {
+        const res = await fetch("http://127.0.0.1:5000/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                "email":email,
-                "password":password
+                username,
+                email,
+                password
             })
         })
 
         const data = await res.json()
-
         if (res.ok) {
-            // ✅ Correct token save
-            localStorage.setItem("token", data.token)
-            alert("Login successful")
-
-            window.location.href = "/templates/note.html"
+            alert("Register successful")
+            window.location.href = "/login.html"
         } else {
-            msg.innerText = data.msg || "Invalid email or password"
+            msg.innerText = data.msg || "Registration failed"
         }
 
     } catch (error) {
@@ -224,7 +233,7 @@ async function login(event) {
     }
 
     btn.disabled = false
-    btn.innerText = "Login"
+    btn.innerText = "Register"
 }
 </script>
 
