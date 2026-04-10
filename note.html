@@ -17,7 +17,7 @@
 
 body{
     min-height: 100vh;
-    background:linear-gradient(rgb(27, 21, 79));
+    background-image:url("image/olgavolkovitskaia-notepad-6980493_1920.jpg");
     font-family: Arial, Helvetica, sans-serif;
     background-size: cover;
     background-repeat: no-repeat;
@@ -28,9 +28,9 @@ nav{
     display: flex;
     justify-content: space-between;
     padding: 1rem 2rem;
-    background-color: rgb(33, 71, 0);
-    border-bottom:2px solid rgb(255, 255, 255,0.456) ;
-    color: white;
+    background-color: rgba(33, 71, 0, 0.151);
+    border-bottom:2px solid rgba(255, 255, 255, 0.758) ;
+    color: rgb(0, 0, 0);
     position: sticky;
     top: 0;
     z-index: 1;
@@ -50,7 +50,7 @@ a{
 
 /* NOTE BOX */
 .note-box{
-    background-color: rgb(143, 120, 79);
+    background-color: rgba(143, 120, 79, 0.552);
     border-radius:1rem;
     width:50%;
     margin: 80px auto;
@@ -65,7 +65,7 @@ h2{
     border-radius: 1rem 1rem 0 0 ;
     font-size:2rem;
     text-align: center;
-    border-bottom: 2px solid blue;
+    border-bottom: 2px solid rgba(0, 0, 255, 0.758);
 }
 
 label{
@@ -75,7 +75,7 @@ label{
 }
 
 #note-title, textarea{
-    background-color: whitesmoke;
+    background-color: rgba(245, 245, 245, 0.753);
     margin:1rem 2rem;
     padding: 10px;
     border-radius: 0.5rem;
@@ -99,7 +99,7 @@ textarea{
     padding: 10px;
     border-radius: 0.5rem;
     cursor: pointer;
-    background-color: rgb(0, 102, 204);
+    background-color: rgb(33, 0, 154);
     color: white;
     border: none;
 }
@@ -116,15 +116,15 @@ textarea{
 li{
     position: relative;
     list-style: none;
-    background-color: rgba(240, 248, 255, 0.73);
+    background-color: rgba(255, 255, 255, 0.673);
     margin:0.5rem 2rem;
     padding: 10px;
     border-radius: 0.5rem;
-    border: 2px solid gray;
-    box-shadow: inset 0px 0px 10px gray;
+    border: 2px solid rgb(211, 211, 211);
+    box-shadow: inset 0px 0px 5px gray;
 }
 li:hover{
-    background-color: rgba(240, 248, 255, 0.929);
+    background-color: rgba(240, 248, 255, 0.767);
 }
 
 /* .notes{
@@ -166,7 +166,7 @@ li:hover{
     padding: 0.3rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    background-color: rgb(47, 152, 2);
+    background-color: rgb(26, 86, 0);
     color: white;
     border: none;    
 }
@@ -238,131 +238,133 @@ li:hover{
 </section>
 
 <script>
-const API = "https://note-app-1-1ceo.onrender.com";
-const token = localStorage.getItem("token");
 
-// 🔐 login check
-if (!token) {
-    window.location.href = "index.html"; // ✅ FIX
-}
+    const API = "https://note-app-1-1ceo.onrender.com"
+    const token = localStorage.getItem("token")
 
-// ✅ PROFILE
-async function getProfile() {
-    try {
-        const res = await fetch(`${API}/profile`, {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        });
-
-        if (!res.ok) return logout();
-
-        const data = await res.json();
-        document.getElementById("user_id").innerText = "Welcome " + data.username;
-
-    } catch (err) {
-        logout();
-    }
-}
-
-// ✅ LOAD NOTES
-async function loadNotes() {
-    try {
-        const res = await fetch(`${API}/notes/data`, {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        });
-
-        if (res.status === 401) return logout();
-
-        const data = await res.json();
-        const list = document.getElementById("note-list");
-        list.innerHTML = "";
-
-        data.forEach(note => {
-            let li = document.createElement("li");
-
-            li.innerHTML = `
-                <h4>${note.note_title}</h4>
-                <p class="notes">${note.notes_content}</p>
-                <button class="open-but" onclick="toggleNote(this)">Open</button>
-                <button class="open-but2" onclick="editNote('${note.note_id}','${note.note_title}','${note.notes_content}')">✏️ Edit</button>
-                <button class="open-but2" onclick="deleteNote('${note.note_id}')">❌ Delete</button>
-            `;
-
-            list.appendChild(li);
-        });
-
-    } catch (err) {
-        logout();
-    }
-}
-
-// ✅ SAVE
-async function saveNote() {
-    let title = document.getElementById("note-title").value.trim();
-    let note = document.getElementById("note").value.trim();
-
-    if (!title || !note) {
-        alert("Enter title and note");
-        return;
+// 🔐 check login ==============================================================================>
+    if (!token) {
+        window.location.href = "login.html"
     }
 
-    try {
-        const res = await fetch(`${API}/note/create`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify({
-                note_title: title,
-                notes_content: note
+
+// ✅ GET PROFILE  =============================================================================>
+    async function getProfile() {
+
+        if (!token) {
+            return logout()
+        }
+
+        try {
+            const response = await fetch(`${API}/profile`, {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
             })
-        });
 
-        if (res.ok) loadNotes();
-
-    } catch {
-        logout();
+            if(!response.ok) {
+            logout()
+            return
+        }
+        const data = await response.json()
+        document.getElementById("user_id").innerText = "Welcome " + data.username
+        } 
+        catch (error) {
+            console.log(error)
+            logout()
+        }
     }
 
-    document.getElementById("note-title").value = "";
-    document.getElementById("note").value = "";
-}
+// ✅ LOAD NOTES  ============================================================>
+    async function loadNotes() {
+        try {
+            const res = await fetch(`${API}/notes/data`, {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            })
 
-// ✅ DELETE
-async function deleteNote(id) {
-    if (!confirm("Delete?")) return;
+            if (res.status === 401) {
+            logout()
+            return
+        }
+            const data = await res.json()
+            const list = document.getElementById("note-list")
+            list.innerHTML = ""
 
-    try {
-        const res = await fetch(`${API}/note/delete`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify({ note_id: id })
-        });
 
-        if (res.ok) loadNotes();
 
-    } catch {
-        logout();
+            data.forEach(note => {
+                let li = document.createElement("li");
+
+                let safeTitle = note.note_title.replace(/'/g, "\\'");
+                let safeContent = note.notes_content.replace(/'/g, "\\'");
+
+                li.innerHTML = `
+                    <h4>${safeTitle}</h4>
+                    <p class="notes">${safeContent}</p>
+                    <button class="open-but" onclick="toggleNote(this)">Open</button>
+                    <button class="open-but2" onclick="editNote('${note.note_id}','${safeTitle}','${safeContent}')">✏️ Edit</button> 
+                    <button class="open-but2" onclick="deleteNote('${note.note_id}')">❌ Delete</button>
+                `;
+
+                list.appendChild(li);
+            });
+
+        } catch (err) {
+            console.log(err)
+            logout()
+
+        }
     }
-}
 
-// 🔓 LOGOUT
-function logout() {
-    localStorage.removeItem("token");
-    window.location.href = "index.html";
-}
+    // ✅ SAVE NOTE (backend)
+    async function saveNote() {
 
-// UI toggle
-function toggleNote(btn) {
+        let title = document.getElementById("note-title").value.trim()
+        let note = document.getElementById("note").value.trim()
+
+        if (!title || !note) {
+            alert("Please enter title and note")
+            return
+        }
+
+        try {
+            const res = await fetch(`${API}/note/create`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    note_title: title,        // ✅ FIX
+                    notes_content: note 
+                })
+            })
+
+            if (res.ok) {
+                loadNotes() // reload notes
+            }
+
+        } catch (err) {
+            console.log(err)
+            logout()
+        }
+
+        // clear input
+        document.getElementById("note-title").value = ""
+        document.getElementById("note").value = ""
+    }
+
+    // 🔓 LOGOUT
+    function logout() {
+        localStorage.removeItem("token")
+        window.location.href = "/index.html"
+    }
+
+    function toggleNote(btn) {
     let noteText = btn.parentElement.querySelector(".notes");
 
     if (!noteText.style.maxHeight || noteText.style.maxHeight === "50px") {
@@ -374,9 +376,94 @@ function toggleNote(btn) {
     }
 }
 
-// 🚀 LOAD
-getProfile();
-loadNotes();
+    // 🚀 AUTO LOAD
+    getProfile()
+    loadNotes()
+
+
+function editNote(id, title, content) {
+        
+        document.getElementById("note-title").value = title;
+        document.getElementById("note").value = content;
+
+        // css style change
+        const btn = document.querySelector(".save-button")
+        btn.innerText = "Update"
+        btn.onclick = async function () {
+            try {
+                const res = await fetch(`${API}note/update`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    },
+                    body: JSON.stringify({
+                        note_id: id,
+                        note_title: document.getElementById("note-title").value,
+                        notes_content: document.getElementById("note").value
+                    })
+                })
+
+                const data = await res.json()
+
+                if(res.ok){
+                    alert("update successfull")
+                    loadNotes()
+
+                    btn.innerText = "Save"
+                    btn.onclick = saveNote
+
+                    document.getElementById("note-title").value ="";
+                    document.getElementById("note").value ="";
+                }
+                
+            }
+
+            catch (err) {
+                console.log(err)
+                logout()
+            }
+
+        }};
+
+
+async function deleteNote(id) {
+
+        const confirmDelete = confirm("Delete this note?")
+        if (!confirmDelete) return
+
+            try {
+                const res = await fetch(`${API}/note/delete`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    },
+                    body: JSON.stringify({
+                        note_id: id,
+                    })
+                })
+
+                const data = await res.json()
+
+                if(res.ok){
+                    alert("Deleted 🗑️")
+                    loadNotes()
+                }
+                else{
+                    alert(data.msg)
+                }
+                
+            }
+
+            catch (err) {
+                console.log(err)
+                logout()
+            }
+
+        };
+
+
 </script>
 
 </body>
