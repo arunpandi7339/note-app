@@ -6,16 +6,16 @@ from flask_cors import CORS
 import uuid
 from functools import wraps
 from werkzeug.security import generate_password_hash,check_password_hash
-import os
 
-SECRET_KEY = os.getenv("SECRET_KEY","mysecret123")
+
+SECRET_KEY = "4ac1b779a56862b74b1b2cc1b87d90d6f99a5b70d83534c20400d8fd3837e29f7a4894fc"
 
 # Flask   ----------->
 app = Flask(__name__)
 CORS(app)
 
 # batabase connection  =============>
-database = MongoClient(os.getenv("MONGO_URI" , "mongodb://localhost:27017/"))
+database = MongoClient("mongodb+srv://arunpandi9794:arun_17_05@cluster0.q1ixhxq.mongodb.net/?appName=Cluster0")
 try:
     conect = database.admin.command("ping")
     print("data base conectet successfullyyyy")
