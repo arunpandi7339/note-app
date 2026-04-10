@@ -181,62 +181,52 @@ button:hover{
 </div>
 
 <script>
+const API = "https://note-app-1-1ceo.onrender.com";
 
-    const API = "https://note-app-1-1ceo.onrender.com/"
+async function register(event) {
+    event.preventDefault();
 
-    function togglePassword() {
-        const pass = document.getElementById("password")
-        pass.type = pass.type === "password" ? "text" : "password"
+    const username = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const msg = document.getElementById("msg");
+    const btn = document.getElementById("btn");
+
+    msg.innerText = "";
+
+    if (!username || !email || !password) {
+        msg.innerText = "All fields are required";
+        return;
     }
 
-    async function register(event) {
-        event.preventDefault()
+    btn.disabled = true;
+    btn.innerText = "Registering...";
 
-        const username = document.getElementById("username").value
-        const email = document.getElementById("email").value
-        const password = document.getElementById("password").value
-        const msg = document.getElementById("msg")
-        const btn = document.getElementById("btn")
+    try {
+        const res = await fetch(`${API}/register`, { // ✅ FIX
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username, email, password })
+        });
 
-        msg.innerText = ""
+        const data = await res.json();
 
-        if (!username || !email || !password) {
-            msg.innerText = "All fields are required"
-            return
-        }
-
-        btn.disabled = true
-        btn.innerText = "Registering..."
-
-        try {
-            const res = await fetch(`${API}register`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    username,
-                    email,
-                    password
-                })
-            })
-
-        const data = await res.json()
         if (res.ok) {
-            alert("Register successful")
-            window.location.href = "/login.html"
+            alert("Register successful");
+            window.location.href = "index.html"; // ✅ FIX
         } else {
-            msg.innerText = data.msg || "Registration failed"
+            msg.innerText = data.msg || "Registration failed";
         }
 
-        } catch (error) {
-            console.log(error)
-            msg.innerText = "Server error"
-        }
-
-        btn.disabled = false
-        btn.innerText = "Register"
+    } catch (error) {
+        msg.innerText = "Server error";
     }
+
+    btn.disabled = false;
+    btn.innerText = "Register";
+}
 </script>
 
 </body>

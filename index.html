@@ -146,7 +146,6 @@ button:hover{
 </div>
 
 <script>
-
 const API = "https://note-app-1-1ceo.onrender.com";
 
 async function login(event) {
@@ -176,34 +175,23 @@ async function login(event) {
             body: JSON.stringify({ email, password })
         });
 
-        const text = await res.text();
-        console.log("Raw response:", text);
-
-        let data;
-        try {
-            data = JSON.parse(text);
-        } catch {
-            msg.innerText = "Server error (Invalid response)";
-            return;
-        }
+        const data = await res.json();
 
         if (res.ok) {
             localStorage.setItem("token", data.token);
             alert("Login successful");
-            window.location.href = "/note.html";
+            window.location.href = "note.html"; // ✅ FIX
         } else {
             msg.innerText = data.msg || "Invalid email or password";
         }
 
     } catch (error) {
-        console.log("Fetch error:", error);
         msg.innerText = "Cannot connect to server";
     }
 
     btn.disabled = false;
     btn.innerText = "Login";
 }
-
 </script>
 
 </body>
